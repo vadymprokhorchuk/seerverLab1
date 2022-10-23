@@ -1,5 +1,6 @@
 from core import app
 from flask import jsonify, request
+import time
 
 USERS = [
     {
@@ -39,6 +40,31 @@ def get_users():
         return jsonify({"users": USERS})
 
 
+@app.route("/user", methods=['POST'])
+def create_users():
+    user_data = request.get_json()
+    try:
+        if user_data["name"]:
+            id_dont_exist = False
+            user_id = 1
+            while not id_dont_exist:
+                id_exist = next((user for user in USERS if user["id"] == user_id), None)
+                if id_exist:
+                    user_id += 1
+                else:
+                    id_dont_exist = True
+            user = {
+                "id": user_id,
+                "name": user_data["name"]
+            }
+            USERS.append(user)
+            return jsonify(user)
+        else:
+            return jsonify({"error": "Not all parameters set."})
+    except Exception:
+        return jsonify({"error": "Invalid user data."})
+
+
 @app.route("/categories")
 def get_categories():
     category_id = request.args.get('id', default=None, type=int)
@@ -50,6 +76,31 @@ def get_categories():
             return jsonify({"error": "Category not found."})
     else:
         return jsonify({"categories": CATEGORIES})
+
+
+@app.route("/category", methods=['POST'])
+def create_category():
+    category_data = request.get_json()
+    try:
+        if category_data["name"]:
+            id_dont_exist = False
+            category_id = 1
+            while not id_dont_exist:
+                id_exist = next((category for category in CATEGORIES if category["id"] == category_id), None)
+                if id_exist:
+                    category_id += 1
+                else:
+                    id_dont_exist = True
+            category = {
+                "id": category_id,
+                "name": category_data["name"]
+            }
+            CATEGORIES.append(category)
+            return jsonify(category)
+        else:
+            return jsonify({"error": "Not all parameters set."})
+    except Exception:
+        return jsonify({"error": "Invalid category data."})
 
 
 @app.route("/records")
@@ -71,6 +122,34 @@ def get_records():
                 return jsonify({"error": "Records from this user not found."})
         else:
             return jsonify({"records": RECORDS})
+
+
+@app.route("/record", methods=['POST'])
+def create_record():
+    record_data = request.get_json()
+    try:
+        if record_data["user_id"] and record_data["category_id"] and record_data["amount"]:
+            id_dont_exist = False
+            record_id = 1
+            while not id_dont_exist:
+                id_exist = next((record for record in RECORDS if record["id"] == record_id), None)
+                if id_exist:
+                    record_id += 1
+                else:
+                    id_dont_exist = True
+            record = {
+                "id": record_id,
+                "user_id": record_data["user_id"],
+                "category_id": record_data["category_id"],
+                "amount": record_data["amount"],
+                "created": int(time.time())
+            }
+            RECORDS.append(record)
+            return jsonify(record)
+        else:
+            return jsonify({"error": "Not all parameters set."})
+    except Exception:
+        return jsonify({"error": "Invalid record data."})
 
 
 @app.route("/")
