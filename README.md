@@ -8,8 +8,8 @@
 - Install packages `pip install -r requirements.txt`
 - Run app `flask --app core run --host 0.0.0.0 -p 8080`
 
-## How to run via Docker:
-- Install Docker
+## How to run via docker:
+- Install docker
 - Install docker-compose
 - Build image `docker build --build-arg PORT=8080 . -t application:latest`
 - Build container `sudo docker-compose build`
