@@ -107,6 +107,7 @@ def create_category():
 def get_records():
     record_id = request.args.get('id', default=None, type=int)
     user_id = request.args.get('user_id', default=None, type=int)
+    category_id = request.args.get('category_id', default=None, type=int)
     if record_id:
         found_record = next((record for record in RECORDS if record["id"] == record_id), None)
         if found_record:
@@ -115,11 +116,18 @@ def get_records():
             return jsonify({"error": "Record not found."})
     else:
         if user_id:
-            records = list(filter(lambda record: record['user_id'] == user_id, RECORDS))
-            if len(records) > 0:
-                return jsonify({"records": records})
+            if category_id:
+                records = list(filter(lambda record: record['user_id'] == user_id and record["category_id"] == category_id, RECORDS))
+                if len(records) > 0:
+                    return jsonify({"records": records})
+                else:
+                    return jsonify({"error": "Records from this user in this category not found."})
             else:
-                return jsonify({"error": "Records from this user not found."})
+                records = list(filter(lambda record: record['user_id'] == user_id, RECORDS))
+                if len(records) > 0:
+                    return jsonify({"records": records})
+                else:
+                    return jsonify({"error": "Records from this user not found."})
         else:
             return jsonify({"records": RECORDS})
 
