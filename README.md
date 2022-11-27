@@ -1,5 +1,10 @@
-# Lab 1
+# Lab 2
 > Live demo [Here](https://serverlab1.herokuapp.com/)
+## Option calculate:
+- Group: ІА-03
+- Calculate: 3 % 3 = `0`
+- My option: `Облік доходів`
+---
 ## How to run via python:
 - Install python3
 - Install pip
